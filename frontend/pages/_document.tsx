@@ -6,10 +6,14 @@ class MyDocument extends Document {
       <Html lang="zh-CN">
         <Head>
           <meta charSet="utf-8" />
-          <link rel="icon" href="/favicon.ico" />
-          {/* Preconnect to font providers */}
+          <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+          {/* Inter — primary display + body font */}
           <link rel="preconnect" href="https://fonts.googleapis.com" />
           <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+          <link
+            href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap"
+            rel="stylesheet"
+          />
         </Head>
         <body>
           <Main />

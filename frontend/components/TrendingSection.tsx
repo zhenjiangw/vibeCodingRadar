@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchTrendingProjects } from '../store/projectSlice';
 import type { RootState, AppDispatch } from '../store/store';
-import { TrendingUp, Star, GitBranch, ExternalLink, ArrowUp, Flame } from 'lucide-react';
+import { Star, GitBranch, TrendingUp } from 'lucide-react';
 
 const TrendingSection: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -40,30 +40,30 @@ const TrendingSection: React.FC = () => {
   return (
     <section
       ref={sectionRef}
-      className={`transition-all duration-700 ${
+      className={`bg-[var(--bg)] transition-all duration-700 ${
         isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12'
       }`}
     >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+      <div className="container-minimal section-y">
         {/* ── Section header ── */}
-        <div className="flex items-center gap-4 mb-10">
-          <div className="relative flex-shrink-0">
-            <div className="absolute inset-0 bg-gradient-to-br from-yellow-500/30 to-orange-500/20 rounded-xl blur-lg" />
-            <div className="relative p-2.5 bg-gradient-to-br from-yellow-600/80 to-orange-500/80 rounded-xl border border-yellow-500/20">
-              <Flame className="w-5 h-5 text-white" />
-            </div>
-          </div>
+        <div className="flex items-start justify-between gap-6 mb-10">
           <div>
-            <h2 className="text-xl md:text-2xl font-bold text-white tracking-tight">
-              GitHub 明星项目
+            <div className="flex items-center gap-2 mb-2">
+              <TrendingUp className="w-4 h-4 text-[var(--accent)]" />
+              <span className="section-label">GitHub 趋势</span>
+            </div>
+            <h2 className="text-2xl font-bold text-[var(--fg)] tracking-tight mb-2">
+              本周热门
             </h2>
-            <p className="text-sm text-text-tertiary mt-0.5">
-              本周增长最快的开源项目
+            <p className="text-sm text-[var(--muted)]">
+              增长最快的开源项目
             </p>
           </div>
-          <div className="hidden sm:flex items-center gap-1.5 ml-auto px-3 py-1.5 rounded-lg bg-white/[0.04] border border-white/[0.06]">
-            <TrendingUp className="w-4 h-4 text-yellow" />
-            <span className="text-xs text-text-tertiary font-mono">实时趋势</span>
+          <div className="flex items-center gap-2 text-[var(--muted)]">
+            <span className="font-mono text-sm tabular-nums text-[var(--accent)] font-medium">
+              {trendingProjects.length > 0 ? String(trendingProjects.length).padStart(2, '0') : '--'}
+            </span>
+            <span className="text-xs">活跃项目</span>
           </div>
         </div>
 
@@ -75,50 +75,47 @@ const TrendingSection: React.FC = () => {
               href={project.url}
               target="_blank"
               rel="noopener noreferrer"
-              className={`group card-base p-5 no-underline
+              className={`minimal-card no-underline block
                 animate-fade-in-up ${isVisible ? '' : 'opacity-0'}`}
               style={{
-                animationDelay: isVisible ? `${idx * 0.06}s` : '0s',
+                animationDelay: isVisible ? `${idx * 0.04}s` : '0s',
                 animationFillMode: 'backwards',
               }}
             >
-              {/* ── Card header ── */}
+              {/* ── Rank + repo name ── */}
               <div className="flex items-start justify-between gap-3 mb-3">
                 <div className="flex items-center gap-3 min-w-0">
-                  {/* GitHub-style icon */}
-                  <div className="flex-shrink-0 w-8 h-8 rounded-lg bg-white/[0.04] border border-white/[0.06] flex items-center justify-center">
-                    <GitBranch className="w-4 h-4 text-text-tertiary" />
-                  </div>
-                  <h3 className="text-sm font-semibold text-white truncate group-hover:text-brand-400 transition-colors duration-300">
+                  <span className="font-mono text-xs text-[var(--faint)] font-medium flex-shrink-0 tabular-nums">
+                    #{String(idx + 1).padStart(2, '0')}
+                  </span>
+                  <h3 className="text-sm font-semibold text-[var(--fg)] truncate group-hover:text-[var(--accent)] transition-colors duration-[var(--motion-fast)]">
                     {project.name}
                   </h3>
                 </div>
-                <ExternalLink className="w-4 h-4 text-text-tertiary opacity-40 flex-shrink-0 group-hover:text-brand-400 transition-colors duration-300" />
+                <GitBranch className="w-4 h-4 text-[var(--faint)] flex-shrink-0" />
               </div>
 
               {/* ── Description ── */}
-              <p className="text-sm text-text-secondary opacity-80 leading-relaxed line-clamp-2 mb-4">
+              <p className="text-sm text-[var(--muted)] leading-relaxed truncate-2 mb-4">
                 {project.description || 'No description provided.'}
               </p>
 
-              {/* ── Stats ── */}
+              {/* ── Stats row ── */}
               <div className="flex items-center justify-between gap-4">
-                {/* Language */}
                 {project.language && (
                   <div className="flex items-center gap-2 min-w-0">
-                    <span className="flex-shrink-0 w-2.5 h-2.5 rounded-full bg-brand-400/60" />
-                    <span className="text-xs font-mono text-text-tertiary truncate">{project.language}</span>
+                    <span className="flex-shrink-0 w-2.5 h-2.5 rounded-full" style={{ backgroundColor: 'var(--accent)' }} />
+                    <span className="text-xs font-mono text-[var(--faint)] truncate">{project.language}</span>
                   </div>
                 )}
 
-                {/* Stars */}
                 <div className="flex items-center gap-3 ml-auto">
-                  <div className="flex items-center gap-1 text-text-tertiary">
+                  <div className="flex items-center gap-1 text-[var(--faint)] tabular-nums">
                     <Star className="w-3.5 h-3.5" />
                     <span className="text-xs font-mono">{formatNumber(project.total_stars)}</span>
                   </div>
                   {project.forks > 0 && (
-                    <div className="flex items-center gap-1 text-text-tertiary">
+                    <div className="flex items-center gap-1 text-[var(--faint)] tabular-nums">
                       <GitBranch className="w-3.5 h-3.5" />
                       <span className="text-xs font-mono">{formatNumber(project.forks)}</span>
                     </div>
@@ -128,16 +125,23 @@ const TrendingSection: React.FC = () => {
 
               {/* ── Weekly growth ── */}
               {project.stars_7d > 0 && (
-                <div className="flex items-center gap-1.5 mt-3 pt-3 border-t border-white/[0.06]">
-                  <ArrowUp className="w-3.5 h-3.5 text-green" />
-                  <span className="text-xs font-mono font-medium text-green">
+                <div className="flex items-center gap-1.5 mt-3 pt-3 border-t border-[var(--border)]">
+                  <TrendingUp className="w-3.5 h-3.5 text-[var(--green)]" />
+                  <span className="text-xs font-mono font-medium text-[var(--green)]">
                     +{formatNumber(project.stars_7d)}
                   </span>
-                  <span className="text-[10px] text-text-tertiary opacity-60">本周增长</span>
+                  <span className="text-[10px] text-[var(--faint)]">本周新增</span>
                 </div>
               )}
             </a>
           ))}
+        </div>
+
+        {/* ── Footer ── */}
+        <div className="mt-12 text-center">
+          <p className="text-[10px] font-mono text-[var(--faint)]">
+            数据来源 GitHub API · 实时更新
+          </p>
         </div>
       </div>
     </section>

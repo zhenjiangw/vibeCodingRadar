@@ -5,12 +5,12 @@ import type { RootState, AppDispatch } from '../store/store';
 import { Gamepad2, Wrench, Baby, Layers } from 'lucide-react';
 
 const iconMap: Record<string, React.ReactNode> = {
-  'gamepad-2': <Gamepad2 className="w-4 h-4" />,
-  'wrench': <Wrench className="w-4 h-4" />,
-  'baby': <Baby className="w-4 h-4" />,
+  'gamepad-2': <Gamepad2 className="w-3.5 h-3.5" />,
+  'wrench': <Wrench className="w-3.5 h-3.5" />,
+  'baby': <Baby className="w-3.5 h-3.5" />,
 };
 
-const fallbackIcon = <Layers className="w-4 h-4" />;
+const fallbackIcon = <Layers className="w-3.5 h-3.5" />;
 
 const CategoryFilter: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -26,27 +26,14 @@ const CategoryFilter: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-wrap items-center gap-2 justify-center">
+    <div className="flex flex-wrap items-center gap-2">
       {/* All */}
       <button
         onClick={() => handleCategoryClick(null)}
-        className={`group relative px-4 py-2 rounded-xl text-sm font-medium transition-all duration-300 ${
-          selectedCategory === null
-            ? 'text-white glow-brand'
-            : 'text-text-tertiary hover:text-text-secondary'
-        }`}
+        className={`pill-minimal ${selectedCategory === null ? 'active' : ''}`}
       >
-        <div
-          className={`absolute inset-0 rounded-xl transition-all duration-300 ${
-            selectedCategory === null
-              ? 'bg-gradient-to-br from-brand-600/80 to-brand-500/60 border border-brand-500/30'
-              : 'bg-white/[0.04] border border-white/[0.06] hover:bg-white/[0.07]'
-          }`}
-        />
-        <span className="relative z-10 flex items-center gap-2">
-          <Layers className="w-4 h-4" />
-          全部项目
-        </span>
+        <Layers className="w-3.5 h-3.5" />
+        全部项目
       </button>
 
       {/* Category items */}
@@ -54,25 +41,13 @@ const CategoryFilter: React.FC = () => {
         <button
           key={category.id}
           onClick={() => handleCategoryClick(category.id)}
-          className={`group relative px-4 py-2 rounded-xl text-sm font-medium transition-all duration-300
-            animate-fade-in-up stagger-${Math.min(idx + 1, 8)} ${
-            selectedCategory === category.id
-              ? 'text-white glow-brand'
-              : 'text-text-tertiary hover:text-text-secondary'
+          className={`pill-minimal animate-fade-in-up stagger-${Math.min(idx + 1, 8)} ${
+            selectedCategory === category.id ? 'active' : ''
           }`}
-          style={{ animationDelay: `${(idx + 1) * 0.04}s` }}
+          style={{ animationDelay: `${(idx + 1) * 0.025}s`, animationFillMode: 'backwards' }}
         >
-          <div
-            className={`absolute inset-0 rounded-xl transition-all duration-300 ${
-              selectedCategory === category.id
-                ? 'bg-gradient-to-br from-brand-600/80 to-brand-500/60 border border-brand-500/30'
-                : 'bg-white/[0.04] border border-white/[0.06] hover:bg-white/[0.07]'
-            }`}
-          />
-          <span className="relative z-10 flex items-center gap-2">
-            {iconMap[category.icon] || fallbackIcon}
-            {category.name}
-          </span>
+          {iconMap[category.icon] || fallbackIcon}
+          {category.name}
         </button>
       ))}
     </div>

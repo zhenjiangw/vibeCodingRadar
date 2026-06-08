@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { X, Copy, Check, Target, Code, ListChecks, Trophy, Clock, Sparkles } from 'lucide-react';
+import { X, Copy, Check, ChevronRight, Code } from 'lucide-react';
 import { useSelector, useDispatch } from 'react-redux';
 import { setSelectedProject } from '../store/projectSlice';
 import type { RootState, AppDispatch } from '../store/store';
@@ -16,7 +16,6 @@ const ProjectModal: React.FC<ProjectModalProps> = ({ isOpen }) => {
 
   useEffect(() => {
     if (isOpen) {
-      // Trigger mount animation
       requestAnimationFrame(() => setVisible(true));
     } else {
       setVisible(false);
@@ -50,7 +49,6 @@ ${project?.implementation_steps?.map((step: string, index: number) => `${index +
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     } catch {
-      // Fallback if clipboard API fails
       const textarea = document.createElement('textarea');
       textarea.value = prompt;
       document.body.appendChild(textarea);
@@ -77,27 +75,33 @@ ${project?.implementation_steps?.map((step: string, index: number) => `${index +
     <div className="fixed inset-0 z-50 flex justify-end">
       {/* Backdrop */}
       <div
-        className={`absolute inset-0 transition-all duration-500 ${
-          visible ? 'bg-black/60 backdrop-blur-sm' : 'bg-black/0 backdrop-blur-none'
+        className={`absolute inset-0 transition-all duration-300 ease-[var(--ease-standard)] ${
+          visible ? 'bg-black/30' : 'bg-transparent'
         }`}
         onClick={handleClose}
       />
 
       {/* Drawer */}
       <div
-        className={`relative w-full max-w-2xl h-full bg-surface-canvas border-l border-white/[0.08] shadow-elevated
-          transition-all duration-500 ease-out overflow-hidden ${
+        className={`relative w-full max-w-2xl h-full bg-[var(--surface)] border-l border-[var(--border)]
+          transition-all duration-400 ease-[var(--ease-standard)] overflow-hidden ${
           visible ? 'translate-x-0 opacity-100' : 'translate-x-8 opacity-0'
         }`}
       >
-        {/* Scrollable content */}
         <div className="h-full overflow-y-auto">
-          <div className="p-6 md:p-8">
-            {/* ── Close button ── */}
-            <div className="flex items-center justify-end mb-6">
+          <div className="p-8 md:p-10">
+            {/* ── Header ── */}
+            <div className="flex items-center justify-between mb-8">
+              <div className="flex items-center gap-3">
+                <span className="section-label">Project · {String(project.id).padStart(2, '0')}</span>
+                <span className="w-1 h-1 rounded-full bg-[var(--border)]" />
+                <span className="font-mono text-xs text-[var(--muted)]">
+                  ~{project.estimated_hours}h
+                </span>
+              </div>
               <button
                 onClick={handleClose}
-                className="p-2 rounded-xl text-text-tertiary hover:text-white hover:bg-white/[0.06] transition-all duration-200"
+                className="p-2 rounded-[var(--radius-sm)] text-[var(--muted)] hover:text-[var(--fg)] hover:bg-[var(--accent-soft)] transition-all duration-[var(--motion-fast)]"
                 aria-label="关闭"
               >
                 <X className="w-5 h-5" />
@@ -105,51 +109,41 @@ ${project?.implementation_steps?.map((step: string, index: number) => `${index +
             </div>
 
             {/* ── Title section ── */}
-            <div className="mb-8">
-              <div className="flex items-center gap-2 mb-2">
-                <div className="px-2 py-0.5 rounded-md text-[11px] font-mono font-medium bg-brand-500/10 text-brand-400 border border-brand-500/20">
-                  {project.difficulty}
-                </div>
-                <div className="px-2 py-0.5 rounded-md text-[11px] font-mono text-text-tertiary bg-white/[0.04] border border-white/[0.06]">
-                  ~{project.estimated_hours}h
-                </div>
-              </div>
-              <h2 className="text-2xl md:text-3xl font-bold text-white tracking-tight mb-3">
+            <div className="mb-10">
+              <h2 className="text-2xl font-bold text-[var(--fg)] tracking-tight mb-4 leading-tight">
                 {project.name}
               </h2>
-              <p className="text-text-secondary leading-relaxed">
+              <p className="text-base text-[var(--muted)] leading-relaxed">
                 {project.description}
               </p>
             </div>
 
-            {/* ── Tech stack pills ── */}
+            {/* ── Tech stack ── */}
             {project.tech_stack && project.tech_stack.length > 0 && (
-              <div className="flex flex-wrap gap-2 mb-8">
-                {project.tech_stack.map((tech, index) => (
-                  <span
-                    key={index}
-                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-mono font-medium bg-brand-500/8 text-brand-400/90 border border-brand-500/15"
-                  >
-                    <Code className="w-3.5 h-3.5" />
-                    {tech}
-                  </span>
-                ))}
+              <div className="mb-8">
+                <span className="section-label block mb-3">
+                  技术栈
+                </span>
+                <div className="flex flex-wrap gap-2">
+                  {project.tech_stack.map((tech, idx) => (
+                    <span key={idx} className="tag-minimal text-sm">
+                      <Code className="w-3.5 h-3.5" />
+                      {tech}
+                    </span>
+                  ))}
+                </div>
               </div>
             )}
 
             {/* ── Core features ── */}
             {project.core_features && project.core_features.length > 0 && (
               <div className="mb-8">
-                <h3 className="text-sm font-semibold text-text-secondary mb-3 flex items-center gap-2">
-                  <Sparkles className="w-4 h-4 text-brand-400" />
+                <span className="section-label block mb-3">
                   核心功能
-                </h3>
+                </span>
                 <div className="flex flex-wrap gap-2">
-                  {project.core_features.map((feature, index) => (
-                    <span
-                      key={index}
-                      className="px-3 py-1.5 rounded-lg text-sm bg-white/[0.03] text-text-secondary border border-white/[0.06]"
-                    >
+                  {project.core_features.map((feature, idx) => (
+                    <span key={idx} className="tag-minimal text-sm">
                       {feature}
                     </span>
                   ))}
@@ -159,68 +153,83 @@ ${project?.implementation_steps?.map((step: string, index: number) => `${index +
 
             {/* ── SMART Goal ── */}
             {project.target && (
-              <Section icon={<Target className="w-4 h-4 text-brand-400" />} title="项目目标（SMART原则）">
-                <p className="text-text-secondary leading-relaxed bg-white/[0.03] rounded-xl p-4 border border-white/[0.06]">
-                  {project.target}
-                </p>
-              </Section>
+              <div className="mb-8">
+                <span className="section-label block mb-3">
+                  项目目标
+                </span>
+                <div className="p-5 bg-[var(--bg)] border border-[var(--border-soft)] rounded-[var(--radius-md)]">
+                  <p className="text-sm text-[var(--fg-2)] leading-relaxed">{project.target}</p>
+                </div>
+              </div>
             )}
 
             {/* ── Tech recommendations ── */}
             {(project.tech_recommendations?.main?.length > 0 || project.tech_recommendations?.auxiliary?.length > 0) && (
-              <Section icon={<Code className="w-4 h-4 text-accent-400" />} title="技术栈建议">
+              <div className="mb-8">
+                <span className="section-label block mb-3">
+                  技术建议
+                </span>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div className="bg-white/[0.03] rounded-xl p-4 border border-white/[0.06]">
-                    <p className="text-xs font-mono text-text-tertiary mb-2 tracking-wide">主技术</p>
-                    <div className="flex flex-wrap gap-2">
-                      {(project.tech_recommendations.main || []).map((tech, index) => (
-                        <span key={index} className="px-3 py-1 rounded-lg text-sm font-mono bg-brand-500/10 text-brand-400 border border-brand-500/20">
-                          {tech}
-                        </span>
-                      ))}
+                  {project.tech_recommendations.main && project.tech_recommendations.main.length > 0 && (
+                    <div className="p-4 bg-[var(--bg)] border border-[var(--border-soft)] rounded-[var(--radius-md)]">
+                      <p className="text-[10px] font-semibold text-[var(--muted)] mb-2 tracking-wide uppercase">Primary</p>
+                      <div className="flex flex-wrap gap-2">
+                        {project.tech_recommendations.main.map((tech, idx) => (
+                          <span key={idx} className="tag-minimal-code text-sm text-[var(--fg-2)]">{tech}</span>
+                        ))}
+                      </div>
                     </div>
-                  </div>
-                  <div className="bg-white/[0.03] rounded-xl p-4 border border-white/[0.06]">
-                    <p className="text-xs font-mono text-text-tertiary mb-2 tracking-wide">辅助技术</p>
-                    <div className="flex flex-wrap gap-2">
-                      {(project.tech_recommendations.auxiliary || []).map((tech, index) => (
-                        <span key={index} className="px-3 py-1 rounded-lg text-sm font-mono bg-accent-500/10 text-accent-400/90 border border-accent-500/20">
-                          {tech}
-                        </span>
-                      ))}
+                  )}
+                  {project.tech_recommendations.auxiliary && project.tech_recommendations.auxiliary.length > 0 && (
+                    <div className="p-4 bg-[var(--bg)] border border-[var(--border-soft)] rounded-[var(--radius-md)]">
+                      <p className="text-[10px] font-semibold text-[var(--muted)] mb-2 tracking-wide uppercase">Auxiliary</p>
+                      <div className="flex flex-wrap gap-2">
+                        {project.tech_recommendations.auxiliary.map((tech, idx) => (
+                          <span key={idx} className="tag-minimal-code text-sm text-[var(--fg-2)]">{tech}</span>
+                        ))}
+                      </div>
                     </div>
-                  </div>
+                  )}
                 </div>
-              </Section>
+              </div>
             )}
 
             {/* ── Implementation steps ── */}
             {project.implementation_steps && project.implementation_steps.length > 0 && (
-              <Section icon={<ListChecks className="w-4 h-4 text-green" />} title="分阶段实施步骤">
+              <div className="mb-8">
+                <span className="section-label block mb-3">
+                  实施步骤
+                </span>
                 <div className="space-y-2">
-                  {project.implementation_steps.map((step, index) => (
-                    <div key={index} className="flex gap-3 items-start bg-white/[0.03] rounded-xl p-3.5 border border-white/[0.06]">
-                      <span className="flex-shrink-0 w-7 h-7 rounded-lg bg-gradient-to-br from-brand-500 to-brand-600 flex items-center justify-center text-white text-xs font-bold font-mono">
-                        {String(index + 1).padStart(2, '0')}
+                  {project.implementation_steps.map((step, idx) => (
+                    <div
+                      key={idx}
+                      className="flex gap-3 items-start p-4 bg-[var(--bg)] border border-[var(--border-soft)] rounded-[var(--radius-md)]"
+                    >
+                      <span className="flex-shrink-0 w-6 h-6 flex items-center justify-center text-xs font-mono font-medium text-white bg-[var(--accent)] rounded-[var(--radius-sm)]">
+                        {String(idx + 1).padStart(2, '0')}
                       </span>
-                      <p className="text-text-secondary leading-relaxed pt-1">{step}</p>
+                      <p className="text-sm text-[var(--muted)] leading-relaxed pt-0.5">{step}</p>
                     </div>
                   ))}
                 </div>
-              </Section>
+              </div>
             )}
 
             {/* ── Expected outcomes ── */}
             {(project.expected_outcomes?.features?.length > 0 || project.expected_outcomes?.learning?.length > 0) && (
-              <Section icon={<Trophy className="w-4 h-4 text-yellow" />} title="预期成果">
+              <div className="mb-10">
+                <span className="section-label block mb-3">
+                  预期成果
+                </span>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   {project.expected_outcomes.features && project.expected_outcomes.features.length > 0 && (
-                    <div className="bg-white/[0.03] rounded-xl p-4 border border-white/[0.06]">
-                      <p className="text-xs font-semibold text-text-tertiary mb-3 tracking-wide">功能</p>
+                    <div className="p-4 bg-[var(--bg)] border border-[var(--border-soft)] rounded-[var(--radius-md)]">
+                      <p className="text-[10px] font-semibold text-[var(--muted)] mb-3 tracking-wide uppercase">功能</p>
                       <ul className="space-y-2">
-                        {project.expected_outcomes.features.map((feature, index) => (
-                          <li key={index} className="text-text-secondary text-sm flex items-start gap-2">
-                            <Check className="w-4 h-4 text-green flex-shrink-0 mt-0.5" />
+                        {project.expected_outcomes.features.map((feature, idx) => (
+                          <li key={idx} className="text-sm text-[var(--muted)] flex items-start gap-2">
+                            <ChevronRight className="w-3.5 h-3.5 text-[var(--accent)] flex-shrink-0 mt-0.5" />
                             {feature}
                           </li>
                         ))}
@@ -228,12 +237,12 @@ ${project?.implementation_steps?.map((step: string, index: number) => `${index +
                     </div>
                   )}
                   {project.expected_outcomes.learning && project.expected_outcomes.learning.length > 0 && (
-                    <div className="bg-white/[0.03] rounded-xl p-4 border border-white/[0.06]">
-                      <p className="text-xs font-semibold text-text-tertiary mb-3 tracking-wide">学习收获</p>
+                    <div className="p-4 bg-[var(--bg)] border border-[var(--border-soft)] rounded-[var(--radius-md)]">
+                      <p className="text-[10px] font-semibold text-[var(--muted)] mb-3 tracking-wide uppercase">学习收获</p>
                       <ul className="space-y-2">
-                        {project.expected_outcomes.learning.map((item, index) => (
-                          <li key={index} className="text-text-secondary text-sm flex items-start gap-2">
-                            <Check className="w-4 h-4 text-green flex-shrink-0 mt-0.5" />
+                        {project.expected_outcomes.learning.map((item, idx) => (
+                          <li key={idx} className="text-sm text-[var(--muted)] flex items-start gap-2">
+                            <ChevronRight className="w-3.5 h-3.5 text-[var(--accent)] flex-shrink-0 mt-0.5" />
                             {item}
                           </li>
                         ))}
@@ -241,16 +250,14 @@ ${project?.implementation_steps?.map((step: string, index: number) => `${index +
                     </div>
                   )}
                 </div>
-              </Section>
+              </div>
             )}
 
-            {/* ── CTA ── */}
-            <div className="mt-8">
+            {/* ── CTA — Copy prompt ── */}
+            <div>
               <button
                 onClick={handleCopyPrompt}
-                className="w-full py-3.5 rounded-xl bg-gradient-to-r from-brand-600 to-brand-500 text-white font-semibold text-sm
-                  flex items-center justify-center gap-2.5 hover:from-brand-500 hover:to-brand-400
-                  active:scale-[0.98] transition-all duration-300 shadow-lg shadow-brand-500/25"
+                className="btn-primary w-full justify-center"
               >
                 {copied ? (
                   <>
@@ -260,10 +267,17 @@ ${project?.implementation_steps?.map((step: string, index: number) => `${index +
                 ) : (
                   <>
                     <Copy className="w-4 h-4" />
-                    复制开工提示词（可直接发给AI助手）
+                    复制开工提示词
                   </>
                 )}
               </button>
+            </div>
+
+            {/* Footer */}
+            <div className="mt-10 pt-6 border-t border-[var(--border)]">
+              <p className="text-[10px] font-mono text-[var(--faint)] text-center">
+                Vibe Coding Radar · {new Date().getFullYear()}
+              </p>
             </div>
           </div>
         </div>
@@ -271,22 +285,5 @@ ${project?.implementation_steps?.map((step: string, index: number) => `${index +
     </div>
   );
 };
-
-/* ── Section wrapper ── */
-interface SectionProps {
-  icon: React.ReactNode;
-  title: string;
-  children: React.ReactNode;
-}
-
-const Section: React.FC<SectionProps> = ({ icon, title, children }) => (
-  <div className="mb-7">
-    <h3 className="flex items-center gap-2 text-sm font-semibold text-text-secondary mb-3">
-      {icon}
-      {title}
-    </h3>
-    {children}
-  </div>
-);
 
 export default ProjectModal;
