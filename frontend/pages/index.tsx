@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchProjects, loadFavorites } from '../store/projectSlice';
+import { fetchProjects, loadFavorites, setSelectedProject } from '../store/projectSlice';
 import type { RootState, AppDispatch } from '../store/store';
+import type { TrendingProject } from '../store/projectSlice';
 import Header from '../components/Header';
 import CategoryFilter from '../components/CategoryFilter';
 import ProjectCard from '../components/ProjectCard';
@@ -19,6 +20,36 @@ const HomePage: React.FC = () => {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [showFavorites, setShowFavorites] = useState(false);
+
+  const handleTrendingDetail = useCallback((tp: TrendingProject) => {
+    dispatch(setSelectedProject({
+      id: tp.id,
+      name: tp.name,
+      slug: tp.full_name?.toLowerCase().replace(/[\/\s]/g, '-') || tp.name.toLowerCase().replace(/\s/g, '-'),
+      description: tp.description,
+      core_features: [],
+      difficulty: '',
+      estimated_hours: 0,
+      tech_stack: [tp.language || ''].filter(Boolean),
+      category_id: 0,
+      target: '',
+      tech_recommendations: { main: [], auxiliary: [] },
+      implementation_steps: [],
+      expected_outcomes: { features: [], learning: [] },
+      is_featured: false,
+      created_at: '',
+      updated_at: '',
+      url: tp.url,
+      language: tp.language,
+      full_name: tp.full_name,
+      stars_24h: tp.stars_24h,
+      stars_7d: tp.stars_7d,
+      total_stars: tp.total_stars,
+      forks: tp.forks,
+      open_issues: tp.open_issues,
+    }));
+    setIsModalOpen(true);
+  }, [dispatch]);
 
   useEffect(() => {
     dispatch(loadFavorites());
@@ -138,7 +169,7 @@ const HomePage: React.FC = () => {
         </section>
 
         {/* Trending Section */}
-        <TrendingSection />
+        <TrendingSection onShowDetail={handleTrendingDetail} />
 
         {/* ═══════════════════════════════════════════════
              FOOTER
@@ -161,7 +192,7 @@ const HomePage: React.FC = () => {
       </main>
 
       {/* ── Project detail drawer ── */}
-      <ProjectModal isOpen={isModalOpen} />
+      <ProjectModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
     </div>
   );
 };

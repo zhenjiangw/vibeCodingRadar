@@ -18,6 +18,15 @@ export interface Project {
   is_featured: boolean;
   created_at: string;
   updated_at: string;
+  /* ── Extended fields for GitHub trending project mapping ── */
+  url?: string;
+  language?: string;
+  full_name?: string;
+  stars_24h?: number;
+  stars_7d?: number;
+  total_stars?: number;
+  forks?: number;
+  open_issues?: number;
 }
 
 export interface Category {

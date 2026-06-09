@@ -1,14 +1,15 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { X, Copy, Check, ChevronRight, Code } from 'lucide-react';
+import { X, Copy, Check, ChevronRight, Code, ExternalLink, Star, GitBranch } from 'lucide-react';
 import { useSelector, useDispatch } from 'react-redux';
 import { setSelectedProject } from '../store/projectSlice';
 import type { RootState, AppDispatch } from '../store/store';
 
 interface ProjectModalProps {
   isOpen: boolean;
+  onClose?: () => void;
 }
 
-const ProjectModal: React.FC<ProjectModalProps> = ({ isOpen }) => {
+const ProjectModal: React.FC<ProjectModalProps> = ({ isOpen, onClose }) => {
   const dispatch = useDispatch<AppDispatch>();
   const project = useSelector((state: RootState) => state.projects.selectedProject);
   const [copied, setCopied] = useState(false);
@@ -24,8 +25,11 @@ const ProjectModal: React.FC<ProjectModalProps> = ({ isOpen }) => {
 
   const handleClose = useCallback(() => {
     setVisible(false);
-    setTimeout(() => dispatch(setSelectedProject(null)), 300);
-  }, [dispatch]);
+    setTimeout(() => {
+      dispatch(setSelectedProject(null));
+      onClose?.();
+    }, 300);
+  }, [dispatch, onClose]);
 
   const handleCopyPrompt = async () => {
     const prompt = `
@@ -117,6 +121,69 @@ ${project?.implementation_steps?.map((step: string, index: number) => `${index +
                 {project.description}
               </p>
             </div>
+
+            {/* ── GitHub link card ── */}
+            {project.url && (
+              <div className="mb-10">
+                <span className="section-label block mb-3">代码仓库</span>
+                <a
+                  href={project.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block p-5 bg-[var(--surface)] border border-[var(--border)] rounded-[var(--radius-md)] hover:border-[var(--accent)] transition-all duration-[var(--motion-fast)] group no-underline"
+                >
+                  <div className="flex items-center justify-between gap-4">
+                    <div className="flex items-center gap-3 min-w-0">
+                      <div className="flex-shrink-0 w-10 h-10 rounded-[var(--radius-sm)] bg-[var(--bg)] flex items-center justify-center border border-[var(--border)]">
+                        <Code className="w-5 h-5 text-[var(--fg)]" />
+                      </div>
+                      <div className="min-w-0">
+                        <p className="text-sm font-semibold text-[var(--fg)] group-hover:text-[var(--accent)] transition-colors truncate">
+                          {project.full_name || project.name}
+                        </p>
+                        <div className="flex items-center gap-1.5 mt-0.5">
+                          <span className="text-[11px] font-mono text-[var(--faint)]">GitHub</span>
+                          <ExternalLink className="w-3 h-3 text-[var(--faint)]" />
+                        </div>
+                      </div>
+                    </div>
+                    {(project.total_stars !== undefined || project.forks !== undefined) && (
+                      <div className="flex items-center gap-3 flex-shrink-0">
+                        {project.total_stars !== undefined && (
+                          <div className="flex items-center gap-1 text-[var(--muted)]">
+                            <Star className="w-3.5 h-3.5" />
+                            <span className="text-xs font-mono tabular-nums">
+                              {project.total_stars >= 1000
+                                ? (project.total_stars / 1000).toFixed(project.total_stars >= 10000 ? 0 : 1) + 'k'
+                                : project.total_stars}
+                            </span>
+                          </div>
+                        )}
+                        {project.forks !== undefined && (
+                          <div className="flex items-center gap-1 text-[var(--muted)]">
+                            <GitBranch className="w-3.5 h-3.5" />
+                            <span className="text-xs font-mono tabular-nums">
+                              {project.forks >= 1000
+                                ? (project.forks / 1000).toFixed(project.forks >= 10000 ? 0 : 1) + 'k'
+                                : project.forks}
+                            </span>
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                  {project.stars_7d !== undefined && project.stars_7d > 0 && (
+                    <div className="flex items-center gap-1.5 mt-3 pt-3 border-t border-[var(--border-soft)]">
+                      <span className="text-[10px] text-[var(--green)]">⬆</span>
+                      <span className="text-xs font-mono font-medium text-[var(--green)]">
+                        +{(project.stars_7d >= 1000 ? (project.stars_7d / 1000).toFixed(project.stars_7d >= 10000 ? 0 : 1) + 'k' : project.stars_7d)}
+                      </span>
+                      <span className="text-[10px] text-[var(--faint)]">本周新增</span>
+                    </div>
+                  )}
+                </a>
+              </div>
+            )}
 
             {/* ── Tech stack ── */}
             {project.tech_stack && project.tech_stack.length > 0 && (

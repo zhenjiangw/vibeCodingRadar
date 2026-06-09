@@ -1,3 +1,4 @@
+from contextlib import asynccontextmanager
 from fastapi import FastAPI, Depends, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
@@ -11,7 +12,13 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-app = FastAPI(title="Vibe Coding Radar API", version="1.0.0")
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    from .init_db import init_db
+    init_db()
+    yield
+
+app = FastAPI(title="Vibe Coding Radar API", version="1.0.0", lifespan=lifespan)
 
 app.add_middleware(
     CORSMiddleware,

@@ -1,5 +1,5 @@
 from .database import engine, Base, SessionLocal
-from .models import Category, Project
+from .models import Category, Project, TrendingProject
 
 def init_db():
     Base.metadata.create_all(bind=engine)
