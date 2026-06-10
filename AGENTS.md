@@ -109,7 +109,15 @@ GitHub API 爬虫 ── 每天 02:00 通过 scheduler.py 触发
 
 - `frontend/styles/globals.css`：~560 行，包含全套 CSS 自定义属性（~50 个 Token）、基础重置、排版、组件 class（`.minimal-card`、`.pill-minimal`、`.btn-primary` 等）、动画关键帧、响应式适配
 - `frontend/tailwind.config.js`：主题扩展（字体族、色板、动画、阴影、圆角）与 CSS 变量对齐
-- 核心原则：**CSS 变量驱动**，Tailwind 用于布局/间距，自定义 class 用于组件视觉样式
+- **核心原则**：**CSS 变量驱动**，Tailwind 用于布局/间距，自定义 class 用于组件视觉样式
+- `--font-display` 当前值为 `'Outfit', Inter, system-ui, sans-serif`（通过 `globals.css` 设定，第 6 轮对话中由 Inter 改为 Outfit 以匹配 MiniMax 风格）
+
+### 3.2.1 字体加载（`_document.tsx`）
+
+- **文件**：`pages/_document.tsx`
+- **Google Fonts 预加载**：Inter (400..800)、JetBrains Mono (400..700)、Outfit (500..800)
+- Outfit 用于标题/展示字体，Inter 用于正文 UI，JetBrains Mono 用于等宽/数字
+- 使用 `preconnect` + `preload` 优化字体加载性能
 
 ### 3.3 色板系统
 
@@ -152,18 +160,47 @@ GitHub API 爬虫 ── 每天 02:00 通过 scheduler.py 触发
 └──────────────────────────────────────────────────────┘
 ```
 
-### 3.5 组件清单
+### 3.5 核心文字/UI 定位
 
-| 组件 | 路径 | 功能 |
+以下是在前几轮写作中确立的关键元素位置（方便后续快速定位和修改）：
+
+| 元素 | 文件 | 行号 / 标识 | 关键属性 |
+|------|------|------------|----------|
+| **标题文字"Vibe Coding Radar"** | `components/Header.tsx:34-36` | `<span>` in `<Link href="/">` | 字体 `Outfit`, `text-2xl`, `font-bold`, `tracking-tight`, `hidden sm:block` |
+| **雷达 SVG 图标** | `components/Header.tsx:21-32` | `<svg viewBox="0 0 32 32">` | 2 同心圆 + 十字准线 + 中心点，`stroke="var(--accent)"`，透明底无背景色 |
+| **首页巨幅标题"Vibe Coding."** | `pages/index.tsx:80-88` | `<p>` in hero `<section>` | `font-[var(--font-display)]`，`fontSize: 'clamp(60px, 12vw, 140px)'`，点号为 `var(--accent)` |
+| **Header 整体高度** | `components/Header.tsx:17` | `h-20` (80px) | 含 `sticky top-0 z-50 glass-header border-b` |
+| **图标容器** | `components/Header.tsx:20` | `w-12 h-12` (48px) | `flex items-center justify-center` |
+| **标题 + 图标共同链接** | `components/Header.tsx:19` | `<Link href="/">` | 包裹图标和标题，整体可点击回到首页，**无** `hover` 变色 |
+
+### 3.6 组件清单
+
+| 组件 | 路径 | 行数 | 功能 | 关键细节 |
+|------|------|------|------|----------|
+| **Header** | `components/Header.tsx` | 77 | 粘性毛玻璃导航栏，透明底雷达 SVG 图标，Outfit 标题，收藏按钮（心形 + 徽章计数 ≤99+） | props: `onShowFavorites`, `isShowFavorites?`；心形填充 `fill={isShowFavorites ? '#2563eb' : 'none'}`；`Link href="/"` 包裹图标+标题可点击回到首页 |
+| **CategoryFilter** | `components/CategoryFilter.tsx` | 57 | 药丸形分类筛选按钮组 | 图标映射 `{'gamepad-2':<Gamepad2/>,'wrench':<Wrench/>,'baby':<Baby/>}`；`selectedCategory===null` 时激活"全部项目"；冗余 `fetchCategories` 仅用于手动注入后刷新 |
+| **DifficultyBadge** | `components/DifficultyBadge.tsx` | 30 | 颜色编码难度标签（初级=绿，中级=黄，高级=红） | config 映射 `{'初级':{color:'var(--green)',bg:'var(--green-bg)'}, ...}`；圆点 + 文字布局 |
+| **ProjectCard** | `components/ProjectCard.tsx` | 119 | 白底项目卡片：难度/工时 → 标题 → 描述 → 核心功能(≤3+N) → 技术栈(≤4+) → 收藏+详情箭头 | `handleCardClick`: 先 `fetchProjectById(dispatch)→setSelectedProject→onShowDetail()`；收藏 `e.stopPropagation()` 防止触发卡片；`animate-fade-in-up` 交错过场 (index ×0.025s) |
+| **ProjectModal** | `components/ProjectModal.tsx` | 357 | 右侧抽屉详情页：遮罩 + 入口/出口动画 → 完整项目详情 + GitHub 链接卡片 + 复制开工提示词 | ⚠️ **关键 Bug 修复（第 6afb875 提交）**：需要 `onClose?: () => void` prop 让 `isOpen` 经过 `true→false→true` 完整周期，否则 `useEffect([isOpen])` 不会重触发，`visible` 卡在 false；`handleClose` 先 `setVisible(false)`，300ms 后 `dispatch(setSelectedProject(null))` + `onClose?.()`；GitHub 链接卡片仅在 `project.url` 存在时渲染（第 126 行）；`Esc` 关闭监听 |
+| **TrendingSection** | `components/TrendingSection.tsx` | 206 | GitHub 本周热门：IntersectionObserver 入场动画 + 6 个示例项目的降级数据 | props: `onShowDetail?: (project: TrendingProject) => void`；`SAMPLE_TRENDING` 常量数组含 6 个真实项目（vscode/react/tailwindcss/next.js/rust/n8n）；`displayProjects` 用 `useMemo` 在 API 空时降级；卡片从 `<a>` 改为 `<div onClick>`（不再直接跳转 GitHub，改为触发详情 modal）；动画 `opacity-0 translate-y-12 → opacity-100 translate-y-0`，交错延迟 `idx × 0.04s` |
+
+### 3.7 主页面编排（`pages/index.tsx`）
+
+| 片段 | 行号 | 作用 |
 |------|------|------|
-| **Header** | `components/Header.tsx` | 粘性毛玻璃导航栏，Logo（蓝紫渐变方块+Radar图标），标题，收藏按钮（带徽章计数，最多显示 99+） |
-| **CategoryFilter** | `components/CategoryFilter.tsx` | 药丸形分类筛选按钮，图标映射（`gamepad-2`/`wrench`/`baby`），激活态蓝底白字 |
-| **DifficultyBadge** | `components/DifficultyBadge.tsx` | 颜色编码难度标签（初级=绿，中级=黄，高级=红），圆点+文字 |
-| **ProjectCard** | `components/ProjectCard.tsx` | 白底卡片：难度/工时→标题→描述→核心功能（最多3+N）→技术栈（最多4+）→收藏+详情箭头 |
-| **ProjectModal** | `components/ProjectModal.tsx` | 右侧滑出抽屉，带遮罩和入口/出口动画（双状态变量），展示完整项目详情 + 复制开工提示词 |
-| **TrendingSection** | `components/TrendingSection.tsx` | GitHub 趋势项目列表，IntersectionObserver 触发入场动画（700ms），卡片 40ms 交错延迟 |
+| `dispatch(loadFavorites())` | 55 | 启动时从 localStorage 恢复收藏 |
+| `dispatch(fetchProjects(...))` | 59-64 | 筛选条件变化时重新拉取项目列表 |
+| `handleTrendingDetail` | 24-52 | ⚡ 将 `TrendingProject` 映射为 `Project` 形状后 `dispatch(setSelectedProject(...))` + `setIsModalOpen(true)` |
+| `displayedProjects` | 66-68 | `showFavorites` 为 `true` 时过滤收藏 |
+| `<Header>` | 72 | 传 `onShowFavorites` + `isShowFavorites` |
+| `<TrendingSection>` | 172 | 传 `onShowDetail={handleTrendingDetail}` |
+| `<ProjectModal>` | 195 | 传 `isOpen={isModalOpen}` + `onClose={() => setIsModalOpen(false)}` |
+| Vibe Coding. 标题 | 82-84 | `clamp(60px, 12vw, 140px)` 流体字号 |
+| 加载状态 | 131-135 | `spinner` + "加载中…" |
+| 空状态 | 136-146 | "暂无项目" / "收藏夹还是空的" |
+| Footer | 177-191 | `2026 · 发现 · 学习 · 创造` |
 
-### 3.6 状态覆盖
+### 3.8 状态覆盖
 
 | 状态 | 处理 |
 |------|------|
@@ -174,7 +211,7 @@ GitHub API 爬虫 ── 每天 02:00 通过 scheduler.py 触发
 | **单项目** | 网格自动调整为单列 |
 | **Transition** | 入场动画 220ms fadeInUp，交错延迟 25ms 递增 |
 
-### 3.7 响应式断点
+### 3.9 响应式断点
 
 | 断点 | 网格 | 容器内边距 | 调整 |
 |------|------|-----------|------|
@@ -183,7 +220,7 @@ GitHub API 爬虫 ── 每天 02:00 通过 scheduler.py 触发
 | **768–1023px (md)** | 2列 | 24px | 3→2列，标题缩小 |
 | **<768px (phone)** | 1列 | 16px | 2→1列，Section边距压缩 |
 
-### 3.8 交互细节
+### 3.10 交互细节
 
 | 交互 | 行为 |
 |------|------|
@@ -191,6 +228,7 @@ GitHub API 爬虫 ── 每天 02:00 通过 scheduler.py 触发
 | **分类筛选** | 点击即切换，药丸标签激活态蓝底白字，非激活悬停蓝环 |
 | **收藏** | 心形点击切换（空心↔实心），计数徽章实时更新，持久化到 localStorage |
 | **项目详情** | 点击卡片 → 右侧抽屉滑出（带遮罩），Esc/点击遮罩关闭 |
+| **热门项目详情** | 点击热门卡片 → `handleTrendingDetail` 将 TrendingProject 映射为 Project → 打开同一详情 modal，内含 GitHub 链接卡片 |
 | **复制提示词** | 一键复制到剪贴板，按钮显示"已复制到剪贴板"反馈 2s |
 | **趋势入场** | 滚动到视口后渐入上移（700ms），卡片逐张交错（40ms 间隔） |
 | **滚动条** | 自定义 6px 窄滚动条，hover 加深颜色 |
