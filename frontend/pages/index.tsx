@@ -69,7 +69,7 @@ const HomePage: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-[var(--bg)]">
-      <Header onShowFavorites={() => setShowFavorites(!showFavorites)} />
+      <Header onShowFavorites={() => setShowFavorites(!showFavorites)} isShowFavorites={showFavorites} />
 
       <main>
         {/* ═══════════════════════════════════════════════

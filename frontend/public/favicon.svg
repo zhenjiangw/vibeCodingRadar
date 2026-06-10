@@ -1,23 +1,57 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
   <defs>
-    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+    <linearGradient id="sweep" x1="0" y1="0" x2="1" y2="1">
       <stop offset="0%" stop-color="#2563eb"/>
-      <stop offset="100%" stop-color="#9333ea"/>
+      <stop offset="100%" stop-color="#6366f1"/>
     </linearGradient>
+    <linearGradient id="glow" x1="0.5" y1="1" x2="0.5" y2="0">
+      <stop offset="0%" stop-color="#6366f1" stop-opacity="0"/>
+      <stop offset="100%" stop-color="#2563eb" stop-opacity="0.2"/>
+    </linearGradient>
+    <filter id="blur1" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="1.5"/>
+    </filter>
   </defs>
-  <!-- background circle -->
-  <circle cx="32" cy="32" r="30" fill="url(#g)" rx="8"/>
-  <!-- radar arcs -->
-  <path d="M32 10 A22 22 0 0 1 54 32" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" opacity="0.4"/>
-  <path d="M32 16 A16 16 0 0 1 48 32" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" opacity="0.6"/>
-  <path d="M32 22 A10 10 0 0 1 42 32" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" opacity="0.8"/>
-  <!-- center dot -->
-  <circle cx="32" cy="32" r="3" fill="#fff"/>
+
+  <!-- outer ring -->
+  <circle cx="32" cy="32" r="28" fill="none" stroke="#2563eb" stroke-width="1.8" opacity="0.25"/>
+
+  <!-- radar arc layers -->
+  <!-- outermost arc (15px dash / 5px gap) -->
+  <path d="M32 6 A26 26 0 0 1 58 32" fill="none" stroke="#2563eb" stroke-width="2.5" stroke-linecap="round" opacity="0.35" stroke-dasharray="15 5"/>
+  <!-- middle arc -->
+  <path d="M32 12 A20 20 0 0 1 52 32" fill="none" stroke="#6366f1" stroke-width="2.5" stroke-linecap="round" opacity="0.5" stroke-dasharray="12 6"/>
+  <!-- inner arc -->
+  <path d="M32 18 A14 14 0 0 1 46 32" fill="none" stroke="#818cf8" stroke-width="2.5" stroke-linecap="round" opacity="0.65" stroke-dasharray="8 5"/>
+  <!-- innermost arc -->
+  <path d="M32 23 A9 9 0 0 1 41 32" fill="none" stroke="#a5b4fc" stroke-width="2.5" stroke-linecap="round" opacity="0.8" stroke-dasharray="5 4"/>
+
+  <!-- sweep trail glow -->
+  <path d="M32 32 L47 21" stroke="url(#glow)" stroke-width="14" stroke-linecap="round" filter="url(#blur1)" opacity="0.4">
+    <animateTransform attributeName="transform" type="rotate" from="0 32 32" to="360 32 32" dur="4s" repeatCount="indefinite"/>
+  </path>
+
   <!-- sweep line -->
-  <line x1="32" y1="32" x2="48" y2="22" stroke="#fff" stroke-width="2" stroke-linecap="round">
-    <animateTransform attributeName="transform" type="rotate" from="0 32 32" to="360 32 32" dur="3s" repeatCount="indefinite"/>
+  <line x1="32" y1="32" x2="46" y2="21" stroke="url(#sweep)" stroke-width="2.5" stroke-linecap="round">
+    <animateTransform attributeName="transform" type="rotate" from="0 32 32" to="360 32 32" dur="4s" repeatCount="indefinite"/>
   </line>
-  <!-- code brackets -->
-  <path d="M20 24 l-4 8 4 8" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" opacity="0.7"/>
-  <path d="M44 24 l4 8-4 8" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" opacity="0.7"/>
+
+  <!-- center dot -->
+  <circle cx="32" cy="32" r="3.5" fill="#6366f1"/>
+  <circle cx="32" cy="32" r="5.5" fill="none" stroke="#818cf8" stroke-width="1" opacity="0.4">
+    <animate attributeName="r" values="3;7;3" dur="2s" repeatCount="indefinite"/>
+    <animate attributeName="opacity" values="0.5;0;0.5" dur="2s" repeatCount="indefinite"/>
+  </circle>
+
+  <!-- code brackets — terminal theme -->
+  <path d="M18 24 l-4 8 4 8" fill="none" stroke="#2563eb" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" opacity="0.6"/>
+  <path d="M46 24 l4 8-4 8" fill="none" stroke="#2563eb" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" opacity="0.6"/>
+
+  <!-- small tick marks on outer ring -->
+  <line x1="32" y1="6" x2="32" y2="10" stroke="#2563eb" stroke-width="1.5" opacity="0.3"/>
+  <line x1="56" y1="20" x2="53" y2="23" stroke="#2563eb" stroke-width="1.5" opacity="0.3"/>
+  <line x1="56" y1="44" x2="53" y2="41" stroke="#2563eb" stroke-width="1.5" opacity="0.3"/>
+  <line x1="32" y1="58" x2="32" y2="54" stroke="#2563eb" stroke-width="1.5" opacity="0.3"/>
+  <line x1="8" y1="44" x2="11" y2="41" stroke="#2563eb" stroke-width="1.5" opacity="0.3"/>
+  <line x1="8" y1="20" x2="11" y2="23" stroke="#2563eb" stroke-width="1.5" opacity="0.3"/>
 </svg>

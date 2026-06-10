@@ -44,7 +44,7 @@
   --red-bg:      rgba(220, 38, 38, 0.10);
 
   /* Typography — Inter (both display + body), mono for code */
-  --font-display: Inter, system-ui, sans-serif;
+  --font-display: 'Outfit', Inter, system-ui, sans-serif;
   --font-body:    Inter, system-ui, sans-serif;
   --font-mono:    'JetBrains Mono', ui-monospace, Menlo, monospace;
 
