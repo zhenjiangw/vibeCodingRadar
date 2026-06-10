@@ -25,6 +25,7 @@ build/
 dist/
 .npm
 .eslintcache
+*.tsbuildinfo
 *.log
 .DS_Store
 
