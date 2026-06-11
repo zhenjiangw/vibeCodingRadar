@@ -416,24 +416,36 @@ ${project?.implementation_steps?.map((step: string, index: number) => `${index +
               </div>
             )}
 
-            {/* ── CTA — Copy prompt ── */}
+            {/* ── CTA — Branch by source ── */}
             <div>
-              <button
-                onClick={handleCopyPrompt}
-                className="btn-primary w-full justify-center"
-              >
-                {copied ? (
-                  <>
-                    <Check className="w-4 h-4" />
-                    已复制到剪贴板
-                  </>
-                ) : (
-                  <>
-                    <Copy className="w-4 h-4" />
-                    复制开工提示词
-                  </>
-                )}
-              </button>
+              {isTrending && project.url ? (
+                <a
+                  href={project.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="btn-primary w-full justify-center font-[var(--font-display)]"
+                >
+                  <ExternalLink className="w-4 h-4" />
+                  在 GitHub 打开
+                </a>
+              ) : (
+                <button
+                  onClick={handleCopyPrompt}
+                  className="btn-primary w-full justify-center"
+                >
+                  {copied ? (
+                    <>
+                      <Check className="w-4 h-4" />
+                      已复制到剪贴板
+                    </>
+                  ) : (
+                    <>
+                      <Copy className="w-4 h-4" />
+                      复制开工提示词
+                    </>
+                  )}
+                </button>
+              )}
             </div>
 
             {/* Footer */}
