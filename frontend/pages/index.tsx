@@ -76,11 +76,29 @@ const HomePage: React.FC = () => {
         {/* ═══════════════════════════════════════════════
              VIBE CODING HERO
              ═══════════════════════════════════════════════ */}
-        <section>
-          <div className="container-minimal py-12 md:py-16">
+        <section
+          className="relative overflow-hidden"
+          style={{
+            background: `radial-gradient(ellipse 70% 60% at 50% 40%, color-mix(in oklab, var(--accent) 6%, transparent), transparent 70%),
+                        radial-gradient(circle 30% at 20% 30%, color-mix(in oklab, var(--accent) 4%, transparent), transparent 60%),
+                        radial-gradient(circle 40% at 80% 50%, color-mix(in oklab, var(--accent) 3%, transparent), transparent 60%)`
+          }}
+        >
+          {/* Decorative radar rings */}
+          <div className="absolute inset-0 pointer-events-none overflow-hidden" aria-hidden="true">
+            <svg className="absolute w-[500px] h-[500px] left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 opacity-[0.04]"
+                 viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="100" cy="100" r="95" stroke="currentColor" strokeWidth="0.5"/>
+              <circle cx="100" cy="100" r="70" stroke="currentColor" strokeWidth="0.5" strokeDasharray="4 6"/>
+              <circle cx="100" cy="100" r="45" stroke="currentColor" strokeWidth="0.4" strokeDasharray="2 5"/>
+              <line x1="5" y1="100" x2="195" y2="100" stroke="currentColor" strokeWidth="0.3" opacity="0.5"/>
+              <line x1="100" y1="5" x2="100" y2="195" stroke="currentColor" strokeWidth="0.3" opacity="0.5"/>
+            </svg>
+          </div>
+          <div className="container-minimal py-12 md:py-20 relative">
             <div className="text-center">
               <p
-                className="font-[var(--font-display)] font-bold text-[var(--fg)] leading-none tracking-[-0.03em] select-none"
+                className="font-[var(--font-display)] font-bold text-[var(--fg)] leading-none tracking-[-0.03em] select-none relative z-10"
                 style={{ fontSize: 'clamp(60px, 12vw, 140px)' }}
               >
                 Vibe Coding<span className="text-[var(--accent)]">.</span>

@@ -12,7 +12,12 @@ const Header: React.FC<HeaderProps> = ({ onShowFavorites, isShowFavorites }) => 
   const favoritesCount = useSelector((state: RootState) => state.projects.favorites.length);
 
   return (
-    <header className="sticky top-0 z-50 glass-header border-b border-[var(--border-soft)]">
+    <header className="sticky top-0 z-50 glass-header border-b border-[var(--border-soft)]" style={{
+      backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 100'%3E%3Ccircle cx='180' cy='40' r='80' fill='none' stroke='currentColor' stroke-width='0.4' opacity='0.08'/%3E%3Ccircle cx='180' cy='40' r='55' fill='none' stroke='currentColor' stroke-width='0.3' opacity='0.06'/%3E%3Ccircle cx='180' cy='40' r='30' fill='none' stroke='currentColor' stroke-width='0.25' opacity='0.05'/%3E%3C/svg%3E")`,
+      backgroundSize: '420px 120px',
+      backgroundRepeat: 'repeat-x',
+      backgroundPosition: 'center left -40px',
+    }}>
       <div className="container-minimal">
         <div className="flex items-center justify-between h-20 gap-6">
           {/* Logo + 标题 — 整体点击回到首页 */}
