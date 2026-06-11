@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { X, Copy, Check, ChevronRight, Code, ExternalLink, Star, GitBranch, CircleDot } from 'lucide-react';
+import { X, Copy, Check, ChevronRight, Code, ExternalLink, Star, GitBranch, CircleDot, TrendingUp } from 'lucide-react';
 import { formatNumber } from '../utils/format';
 import { useSelector, useDispatch } from 'react-redux';
 import { setSelectedProject } from '../store/projectSlice';
@@ -220,6 +220,63 @@ ${project?.implementation_steps?.map((step: string, index: number) => `${index +
                       </p>
                     </div>
                   )}
+                </div>
+              </div>
+            )}
+
+            {/* ── Trending: 近期增长 ── */}
+            {isTrending && ((project.stars_24h !== undefined && project.stars_24h > 0) || (project.stars_7d !== undefined && project.stars_7d > 0)) && (
+              <div className="mb-8">
+                <span className="section-label block mb-3">近期增长</span>
+                <div className="p-5 bg-[var(--bg)] border border-[var(--border-soft)] rounded-[var(--radius-md)] space-y-4">
+                  {(() => {
+                    const stars24h = project.stars_24h ?? 0;
+                    const stars7d = project.stars_7d ?? 0;
+                    const pct24h = stars7d > 0
+                      ? Math.min(100, Math.round((stars24h / stars7d) * 100))
+                      : 0;
+                    return (
+                      <>
+                        <div className="flex items-center gap-3">
+                          <span className="text-[10px] font-semibold text-[var(--muted)] tracking-wide uppercase w-20 flex-shrink-0">
+                            近 24 小时
+                          </span>
+                          <div className="flex items-center gap-1.5 w-24 flex-shrink-0">
+                            <TrendingUp className="w-3.5 h-3.5 text-[var(--green)]" />
+                            <span className="text-sm font-mono font-bold text-[var(--green)] tabular-nums">
+                              +{formatNumber(stars24h)}
+                            </span>
+                          </div>
+                          <div className="flex-1 h-1 rounded-full bg-[var(--border-soft)] overflow-hidden">
+                            <div
+                              className="h-full bg-[var(--green)] rounded-full transition-all duration-700"
+                              style={{ width: `${pct24h}%` }}
+                            />
+                          </div>
+                          <span className="text-[10px] font-mono text-[var(--faint)] tabular-nums w-10 text-right">
+                            {pct24h}%
+                          </span>
+                        </div>
+                        <div className="flex items-center gap-3">
+                          <span className="text-[10px] font-semibold text-[var(--muted)] tracking-wide uppercase w-20 flex-shrink-0">
+                            近 7 天
+                          </span>
+                          <div className="flex items-center gap-1.5 w-24 flex-shrink-0">
+                            <TrendingUp className="w-3.5 h-3.5 text-[var(--green)]" />
+                            <span className="text-sm font-mono font-bold text-[var(--green)] tabular-nums">
+                              +{formatNumber(stars7d)}
+                            </span>
+                          </div>
+                          <div className="flex-1 h-1 rounded-full bg-[var(--border-soft)] overflow-hidden">
+                            <div className="h-full bg-[var(--green)] rounded-full w-full" />
+                          </div>
+                          <span className="invisible text-[10px] font-mono tabular-nums w-10 text-right">
+                            100%
+                          </span>
+                        </div>
+                      </>
+                    );
+                  })()}
                 </div>
               </div>
             )}
