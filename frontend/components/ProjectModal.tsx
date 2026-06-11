@@ -268,7 +268,7 @@ ${project?.implementation_steps?.map((step: string, index: number) => `${index +
                             </span>
                           </div>
                           <div className="flex-1 h-1 rounded-full bg-[var(--border-soft)] overflow-hidden">
-                            <div className="h-full bg-[var(--green)] rounded-full w-full" />
+                            <div className="h-full bg-[var(--green)] rounded-full w-full transition-all duration-700" />
                           </div>
                           <span className="invisible text-[10px] font-mono tabular-nums w-10 text-right">
                             100%
