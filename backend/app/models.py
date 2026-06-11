@@ -29,6 +29,7 @@ class Project(Base):
     tech_recommendations = Column(JSON)
     implementation_steps = Column(ARRAY(Text))
     expected_outcomes = Column(JSON)
+    url = Column(String(500))
     is_featured = Column(Boolean, default=False)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), onupdate=func.now())

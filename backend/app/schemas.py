@@ -29,6 +29,7 @@ class ProjectBase(BaseModel):
     tech_recommendations: Dict[str, List[str]]
     implementation_steps: List[str] = Field(..., min_items=5)
     expected_outcomes: Dict[str, List[str]]
+    url: Optional[str] = None
     is_featured: bool = False
 
 class Project(ProjectBase):

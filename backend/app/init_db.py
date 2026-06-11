@@ -4,7 +4,7 @@ from .models import Category, Project, TrendingProject
 def init_db():
     Base.metadata.create_all(bind=engine)
     db = SessionLocal()
-    
+
     try:
         if not db.query(Category).first():
             categories = [
@@ -29,7 +29,7 @@ def init_db():
             ]
             db.add_all(categories)
             db.commit()
-        
+
         if not db.query(Project).first():
             projects = [
                 Project(
@@ -51,7 +51,8 @@ def init_db():
                         "添加评论功能和SEO优化",
                         "部署到Vercel并配置域名"
                     ],
-                    expected_outcomes={"功能": ["完整的博客系统", "Markdown编辑", "评论系统"], "学习收获": ["Next.js开发", "数据库设计", "SEO优化"]}
+                    expected_outcomes={"功能": ["完整的博客系统", "Markdown编辑", "评论系统"], "学习收获": ["Next.js开发", "数据库设计", "SEO优化"]},
+                    url="https://github.com/example/personal-blog"
                 ),
                 Project(
                     name="待办事项应用",
@@ -72,7 +73,8 @@ def init_db():
                         "实现数据同步和离线支持",
                         "添加统计分析功能"
                     ],
-                    expected_outcomes={"功能": ["任务管理", "数据同步", "统计分析"], "学习收获": ["React Hooks", "Firebase", "TypeScript"]}
+                    expected_outcomes={"功能": ["任务管理", "数据同步", "统计分析"], "学习收获": ["React Hooks", "Firebase", "TypeScript"]},
+                    url="https://github.com/example/todo-app"
                 ),
                 Project(
                     name="天气查询应用",
@@ -93,7 +95,8 @@ def init_db():
                         "实现7天预报展示",
                         "优化UI设计和动画效果"
                     ],
-                    expected_outcomes={"功能": ["实时天气", "城市切换", "7天预报"], "学习收获": ["Vue.js开发", "API调用", "响应式设计"]}
+                    expected_outcomes={"功能": ["实时天气", "城市切换", "7天预报"], "学习收获": ["Vue.js开发", "API调用", "响应式设计"]},
+                    url="https://github.com/example/weather-app"
                 ),
                 Project(
                     name="在线代码编辑器",
@@ -114,7 +117,8 @@ def init_db():
                         "实现代码分享功能",
                         "部署到服务器"
                     ],
-                    expected_outcomes={"功能": ["代码编辑", "实时预览", "代码分享"], "学习收获": ["Monaco Editor", "代码执行", "Web安全"]}
+                    expected_outcomes={"功能": ["代码编辑", "实时预览", "代码分享"], "学习收获": ["Monaco Editor", "代码执行", "Web安全"]},
+                    url="https://github.com/example/code-editor"
                 ),
                 Project(
                     name="电商管理后台",
@@ -136,7 +140,8 @@ def init_db():
                         "添加数据分析仪表盘",
                         "部署和性能优化"
                     ],
-                    expected_outcomes={"功能": ["商品管理", "订单处理", "数据分析"], "学习收获": ["企业级应用", "权限管理", "性能优化"]}
+                    expected_outcomes={"功能": ["商品管理", "订单处理", "数据分析"], "学习收获": ["企业级应用", "权限管理", "性能优化"]},
+                    url="https://github.com/example/ecommerce-admin"
                 ),
                 Project(
                     name="即时通讯应用",
@@ -158,7 +163,8 @@ def init_db():
                         "实现文件分享和消息通知",
                         "测试和发布"
                     ],
-                    expected_outcomes={"功能": ["即时消息", "群组聊天", "文件分享"], "学习收获": ["React Native", "实时通信", "移动开发"]}
+                    expected_outcomes={"功能": ["即时消息", "群组聊天", "文件分享"], "学习收获": ["React Native", "实时通信", "移动开发"]},
+                    url="https://github.com/example/chat-app"
                 ),
                 Project(
                     name="笔记管理应用",
@@ -179,7 +185,8 @@ def init_db():
                         "实现数据导出功能",
                         "添加深色模式支持"
                     ],
-                    expected_outcomes={"功能": ["富文本编辑", "标签分类", "搜索"], "学习收获": ["富文本编辑", "IndexedDB", "PWA"]}
+                    expected_outcomes={"功能": ["富文本编辑", "标签分类", "搜索"], "学习收获": ["富文本编辑", "IndexedDB", "PWA"]},
+                    url="https://github.com/example/note-app"
                 ),
                 Project(
                     name="健身计划追踪器",
@@ -200,7 +207,8 @@ def init_db():
                         "实现运动指导模块",
                         "添加社交分享功能"
                     ],
-                    expected_outcomes={"功能": ["计划制定", "进度追踪", "数据可视化"], "学习收获": ["D3.js", "数据可视化", "健康应用"]}
+                    expected_outcomes={"功能": ["计划制定", "进度追踪", "数据可视化"], "学习收获": ["D3.js", "数据可视化", "健康应用"]},
+                    url="https://github.com/example/fitness-tracker"
                 ),
                 Project(
                     name="URL短链接服务",
@@ -221,7 +229,8 @@ def init_db():
                         "实现访问统计",
                         "添加批量处理功能"
                     ],
-                    expected_outcomes={"功能": ["URL缩短", "访问统计", "批量处理"], "学习收获": ["FastAPI", "Redis", "算法设计"]}
+                    expected_outcomes={"功能": ["URL缩短", "访问统计", "批量处理"], "学习收获": ["FastAPI", "Redis", "算法设计"]},
+                    url="https://github.com/example/url-shortener"
                 ),
                 Project(
                     name="AI图像生成器",
@@ -242,7 +251,8 @@ def init_db():
                         "实现图片编辑功能",
                         "添加历史记录和导出功能"
                     ],
-                    expected_outcomes={"功能": ["AI图像生成", "风格转换", "图片编辑"], "学习收获": ["AI API", "图像处理", "创意应用"]}
+                    expected_outcomes={"功能": ["AI图像生成", "风格转换", "图片编辑"], "学习收获": ["AI API", "图像处理", "创意应用"]},
+                    url="https://github.com/example/ai-image-generator"
                 ),
                 Project(
                     name="股票行情追踪器",
@@ -263,7 +273,8 @@ def init_db():
                         "实现价格预警功能",
                         "添加数据分析和新闻资讯"
                     ],
-                    expected_outcomes={"功能": ["实时行情", "投资组合", "数据分析"], "学习收获": ["金融API", "数据可视化", "实时数据"]}
+                    expected_outcomes={"功能": ["实时行情", "投资组合", "数据分析"], "学习收获": ["金融API", "数据可视化", "实时数据"]},
+                    url="https://github.com/example/stock-tracker"
                 ),
                 Project(
                     name="音乐播放器",
@@ -284,12 +295,13 @@ def init_db():
                         "实现歌词显示",
                         "添加音效调节和社交分享"
                     ],
-                    expected_outcomes={"功能": ["音乐播放", "歌单管理", "歌词显示"], "学习收获": ["Web Audio API", "音乐流媒体", "UI/UX"]}
+                    expected_outcomes={"功能": ["音乐播放", "歌单管理", "歌词显示"], "学习收获": ["Web Audio API", "音乐流媒体", "UI/UX"]},
+                    url="https://github.com/example/music-player"
                 )
             ]
             db.add_all(projects)
             db.commit()
-        
+
         print("Database initialized successfully")
     finally:
         db.close()
