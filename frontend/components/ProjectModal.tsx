@@ -12,6 +12,11 @@ interface ProjectModalProps {
 const ProjectModal: React.FC<ProjectModalProps> = ({ isOpen, onClose }) => {
   const dispatch = useDispatch<AppDispatch>();
   const project = useSelector((state: RootState) => state.projects.selectedProject);
+  const trendingList = useSelector((state: RootState) => state.projects.trendingProjects);
+  const isTrending = project?.__source === 'trending';
+  const trendingRank = isTrending && project
+    ? (trendingList.findIndex(p => p.id === project.id) + 1) || null
+    : null;
   const [copied, setCopied] = useState(false);
   const [visible, setVisible] = useState(false);
 
@@ -97,11 +102,29 @@ ${project?.implementation_steps?.map((step: string, index: number) => `${index +
             {/* ── Header ── */}
             <div className="flex items-center justify-between mb-8">
               <div className="flex items-center gap-3">
-                <span className="section-label">Project · {String(project.id).padStart(2, '0')}</span>
-                <span className="w-1 h-1 rounded-full bg-[var(--border)]" />
-                <span className="font-mono text-xs text-[var(--muted)]">
-                  ~{project.estimated_hours}h
-                </span>
+                {isTrending ? (
+                  <>
+                    <span className="section-label">
+                      Trending{trendingRank ? ` · #${String(trendingRank).padStart(2, '0')}` : ''}
+                    </span>
+                    {project.language && (
+                      <>
+                        <span className="w-1 h-1 rounded-full bg-[var(--border)]" />
+                        <span className="font-mono text-xs text-[var(--muted)]">
+                          {project.language}
+                        </span>
+                      </>
+                    )}
+                  </>
+                ) : (
+                  <>
+                    <span className="section-label">Project · {String(project.id).padStart(2, '0')}</span>
+                    <span className="w-1 h-1 rounded-full bg-[var(--border)]" />
+                    <span className="font-mono text-xs text-[var(--muted)]">
+                      ~{project.estimated_hours}h
+                    </span>
+                  </>
+                )}
               </div>
               <button
                 onClick={handleClose}
@@ -186,7 +209,7 @@ ${project?.implementation_steps?.map((step: string, index: number) => `${index +
             )}
 
             {/* ── Tech stack ── */}
-            {project.tech_stack && project.tech_stack.length > 0 && (
+            {!isTrending && project.tech_stack && project.tech_stack.length > 0 && (
               <div className="mb-8">
                 <span className="section-label block mb-3">
                   技术栈
@@ -203,7 +226,7 @@ ${project?.implementation_steps?.map((step: string, index: number) => `${index +
             )}
 
             {/* ── Core features ── */}
-            {project.core_features && project.core_features.length > 0 && (
+            {!isTrending && project.core_features && project.core_features.length > 0 && (
               <div className="mb-8">
                 <span className="section-label block mb-3">
                   核心功能
@@ -219,7 +242,7 @@ ${project?.implementation_steps?.map((step: string, index: number) => `${index +
             )}
 
             {/* ── SMART Goal ── */}
-            {project.target && (
+            {!isTrending && project.target && (
               <div className="mb-8">
                 <span className="section-label block mb-3">
                   项目目标
@@ -231,7 +254,7 @@ ${project?.implementation_steps?.map((step: string, index: number) => `${index +
             )}
 
             {/* ── Tech recommendations ── */}
-            {(project.tech_recommendations?.main?.length > 0 || project.tech_recommendations?.auxiliary?.length > 0) && (
+            {!isTrending && (project.tech_recommendations?.main?.length > 0 || project.tech_recommendations?.auxiliary?.length > 0) && (
               <div className="mb-8">
                 <span className="section-label block mb-3">
                   技术建议
@@ -262,7 +285,7 @@ ${project?.implementation_steps?.map((step: string, index: number) => `${index +
             )}
 
             {/* ── Implementation steps ── */}
-            {project.implementation_steps && project.implementation_steps.length > 0 && (
+            {!isTrending && project.implementation_steps && project.implementation_steps.length > 0 && (
               <div className="mb-8">
                 <span className="section-label block mb-3">
                   实施步骤
@@ -284,7 +307,7 @@ ${project?.implementation_steps?.map((step: string, index: number) => `${index +
             )}
 
             {/* ── Expected outcomes ── */}
-            {(project.expected_outcomes?.features?.length > 0 || project.expected_outcomes?.learning?.length > 0) && (
+            {!isTrending && (project.expected_outcomes?.features?.length > 0 || project.expected_outcomes?.learning?.length > 0) && (
               <div className="mb-10">
                 <span className="section-label block mb-3">
                   预期成果
