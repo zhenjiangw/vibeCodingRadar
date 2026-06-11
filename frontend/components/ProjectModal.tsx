@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { X, Copy, Check, ChevronRight, Code, ExternalLink, Star, GitBranch } from 'lucide-react';
+import { X, Copy, Check, ChevronRight, Code, ExternalLink, Star, GitBranch, CircleDot } from 'lucide-react';
+import { formatNumber } from '../utils/format';
 import { useSelector, useDispatch } from 'react-redux';
 import { setSelectedProject } from '../store/projectSlice';
 import type { RootState, AppDispatch } from '../store/store';
@@ -172,6 +173,54 @@ ${project?.implementation_steps?.map((step: string, index: number) => `${index +
                     </div>
                   </div>
                 </a>
+              </div>
+            )}
+
+            {/* ── Trending: 项目指标面板 ── */}
+            {isTrending && (project.total_stars !== undefined || project.forks !== undefined || project.open_issues !== undefined) && (
+              <div className="mb-8">
+                <span className="section-label block mb-3">项目指标</span>
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                  {project.total_stars !== undefined && project.total_stars > 0 && (
+                    <div className="p-5 bg-[var(--bg)] border border-[var(--border-soft)] rounded-[var(--radius-md)]">
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="text-[10px] font-semibold text-[var(--muted)] tracking-wide uppercase">
+                          Stars
+                        </span>
+                        <Star className="w-3.5 h-3.5 text-[var(--faint)]" />
+                      </div>
+                      <p className="text-2xl font-mono font-bold tabular-nums text-[var(--fg)]">
+                        {formatNumber(project.total_stars)}
+                      </p>
+                    </div>
+                  )}
+                  {project.forks !== undefined && project.forks > 0 && (
+                    <div className="p-5 bg-[var(--bg)] border border-[var(--border-soft)] rounded-[var(--radius-md)]">
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="text-[10px] font-semibold text-[var(--muted)] tracking-wide uppercase">
+                          Forks
+                        </span>
+                        <GitBranch className="w-3.5 h-3.5 text-[var(--faint)]" />
+                      </div>
+                      <p className="text-2xl font-mono font-bold tabular-nums text-[var(--fg)]">
+                        {formatNumber(project.forks)}
+                      </p>
+                    </div>
+                  )}
+                  {project.open_issues !== undefined && (
+                    <div className="col-span-2 sm:col-span-1 p-5 bg-[var(--bg)] border border-[var(--border-soft)] rounded-[var(--radius-md)]">
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="text-[10px] font-semibold text-[var(--muted)] tracking-wide uppercase">
+                          Issues
+                        </span>
+                        <CircleDot className="w-3.5 h-3.5 text-[var(--faint)]" />
+                      </div>
+                      <p className="text-2xl font-mono font-bold tabular-nums text-[var(--fg)]">
+                        {project.open_issues.toLocaleString()}
+                      </p>
+                    </div>
+                  )}
+                </div>
               </div>
             )}
 
