@@ -27,7 +27,7 @@ export interface Project {
   total_stars?: number;
   forks?: number;
   open_issues?: number;
-  /* ── 详情 modal 内容分支标识 ── */
+  /* 详情 modal 内容分支判别字段：决定渲染 library 视图（库专属字段填充）还是 trending 视图（指标/增长）。缺省视为 library。 */
   __source?: 'library' | 'trending';
 }
 

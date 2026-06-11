@@ -23,6 +23,9 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project, index, onShowDetail 
   };
 
   const handleCardClick = async () => {
+    // Order matters: fetchProjectById.fulfilled overwrites selectedProject with the server
+    // payload (which has no __source), so the explicit setSelectedProject must come after to
+    // re-apply the library discriminator before the modal reads it.
     await dispatch(fetchProjectById(project.id));
     dispatch(setSelectedProject({ ...project, __source: 'library' }));
     onShowDetail();
