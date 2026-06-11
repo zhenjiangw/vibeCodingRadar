@@ -47,6 +47,7 @@ const HomePage: React.FC = () => {
       total_stars: tp.total_stars,
       forks: tp.forks,
       open_issues: tp.open_issues,
+      __source: 'trending',
     }));
     setIsModalOpen(true);
   }, [dispatch]);

@@ -24,7 +24,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project, index, onShowDetail 
 
   const handleCardClick = async () => {
     await dispatch(fetchProjectById(project.id));
-    dispatch(setSelectedProject(project));
+    dispatch(setSelectedProject({ ...project, __source: 'library' }));
     onShowDetail();
   };
 

@@ -27,6 +27,8 @@ export interface Project {
   total_stars?: number;
   forks?: number;
   open_issues?: number;
+  /* ── 详情 modal 内容分支标识 ── */
+  __source?: 'library' | 'trending';
 }
 
 export interface Category {

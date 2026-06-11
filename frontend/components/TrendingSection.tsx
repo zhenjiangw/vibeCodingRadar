@@ -4,6 +4,7 @@ import { fetchTrendingProjects } from '../store/projectSlice';
 import type { RootState, AppDispatch } from '../store/store';
 import { Star, GitBranch, TrendingUp } from 'lucide-react';
 import type { TrendingProject } from '../store/projectSlice';
+import { formatNumber } from '../utils/format';
 
 /* ── Fallback sample data for GitHub trending (shown when API returns empty) ── */
 const SAMPLE_TRENDING: TrendingProject[] = [
@@ -83,12 +84,6 @@ const TrendingSection: React.FC<TrendingSectionProps> = ({ onShowDetail }) => {
     if (el) observer.observe(el);
     return () => observer.disconnect();
   }, []);
-
-  const formatNumber = (num: number): string => {
-    if (num >= 10000) return (num / 1000).toFixed(0) + 'k';
-    if (num >= 1000) return (num / 1000).toFixed(1) + 'k';
-    return num.toString();
-  };
 
   return (
     <section
