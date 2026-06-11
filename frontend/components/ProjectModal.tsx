@@ -170,40 +170,7 @@ ${project?.implementation_steps?.map((step: string, index: number) => `${index +
                         </div>
                       </div>
                     </div>
-                    {(project.total_stars !== undefined || project.forks !== undefined) && (
-                      <div className="flex items-center gap-3 flex-shrink-0">
-                        {project.total_stars !== undefined && (
-                          <div className="flex items-center gap-1 text-[var(--muted)]">
-                            <Star className="w-3.5 h-3.5" />
-                            <span className="text-xs font-mono tabular-nums">
-                              {project.total_stars >= 1000
-                                ? (project.total_stars / 1000).toFixed(project.total_stars >= 10000 ? 0 : 1) + 'k'
-                                : project.total_stars}
-                            </span>
-                          </div>
-                        )}
-                        {project.forks !== undefined && (
-                          <div className="flex items-center gap-1 text-[var(--muted)]">
-                            <GitBranch className="w-3.5 h-3.5" />
-                            <span className="text-xs font-mono tabular-nums">
-                              {project.forks >= 1000
-                                ? (project.forks / 1000).toFixed(project.forks >= 10000 ? 0 : 1) + 'k'
-                                : project.forks}
-                            </span>
-                          </div>
-                        )}
-                      </div>
-                    )}
                   </div>
-                  {project.stars_7d !== undefined && project.stars_7d > 0 && (
-                    <div className="flex items-center gap-1.5 mt-3 pt-3 border-t border-[var(--border-soft)]">
-                      <span className="text-[10px] text-[var(--green)]">⬆</span>
-                      <span className="text-xs font-mono font-medium text-[var(--green)]">
-                        +{(project.stars_7d >= 1000 ? (project.stars_7d / 1000).toFixed(project.stars_7d >= 10000 ? 0 : 1) + 'k' : project.stars_7d)}
-                      </span>
-                      <span className="text-[10px] text-[var(--faint)]">本周新增</span>
-                    </div>
-                  )}
                 </a>
               </div>
             )}
